@@ -94,6 +94,11 @@ options:
   poolname:
     description:
       - Specifies NAT pool name.
+  utm_status:
+    description:
+      - Enable or disable utm profile.
+    default: false
+    choices: ["true", "false"]
   av_profile:
     description:
       - Specifies Antivirus profile name.
@@ -218,6 +223,7 @@ def main():
         nat=dict(type='bool', default=False),
         fixedport=dict(type='bool', default=False),
         poolname=dict(type='str'),
+        utm_status=dict(type='bool', default=False),
         av_profile=dict(type='str'),
         webfilter_profile=dict(type='str'),
         ips_sensor=dict(type='str'),
@@ -312,6 +318,8 @@ def main():
                 new_policy.set_param('poolname', '"%s"' % (module.params['poolname']))
 
         # security profiles:
+        if module.params['utm_status']:
+            new_policy.set_param('utm-status', 'enable')
         if module.params['av_profile'] is not None:
             new_policy.set_param('av-profile', '"%s"' % (module.params['av_profile']))
         if module.params['webfilter_profile'] is not None:
