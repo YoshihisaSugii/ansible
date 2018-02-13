@@ -99,6 +99,9 @@ options:
       - Enable or disable utm profile.
     default: false
     choices: ["true", "false"]
+  profile_protocol_option:
+    description:
+      - Specifies Protocol Option profile name.
   av_profile:
     description:
       - Specifies Antivirus profile name.
@@ -111,6 +114,9 @@ options:
   application_list:
     description:
       - Specifies Application Control name.
+  ssl_ssh_profile:
+    description:
+      - Specifies SSL SSH Inspection profile name.
   logtraffic:
     version_added: "2.4"
     description:
@@ -224,10 +230,12 @@ def main():
         fixedport=dict(type='bool', default=False),
         poolname=dict(type='str'),
         utm_status=dict(type='bool', default=False),
+        profile_protocol_option=dict(type='str'),
         av_profile=dict(type='str'),
         webfilter_profile=dict(type='str'),
         ips_sensor=dict(type='str'),
         application_list=dict(type='str'),
+        ssl_ssh_profile=dict(type='str'),
         logtraffic=dict(choices=['disable', 'all', 'utm'], default='utm'),
         logtraffic_start=dict(type='bool', default=False),
     )
@@ -320,6 +328,8 @@ def main():
         # security profiles:
         if module.params['utm_status']:
             new_policy.set_param('utm-status', 'enable')
+        if module.params['profile_protocol_option'] is not None:
+            new_policy.set_param('profile-protocol-options', '"%s"' % (module.params['profile_protocol_option']))
         if module.params['av_profile'] is not None:
             new_policy.set_param('av-profile', '"%s"' % (module.params['av_profile']))
         if module.params['webfilter_profile'] is not None:
@@ -328,6 +338,8 @@ def main():
             new_policy.set_param('ips-sensor', '"%s"' % (module.params['ips_sensor']))
         if module.params['application_list'] is not None:
             new_policy.set_param('application-list', '"%s"' % (module.params['application_list']))
+        if module.params['ssl_ssh_profile'] is not None:
+            new_policy.set_param('ssl-ssh-profile', '"%s"' % (module.params['ssl_ssh_profile']))
 
         # comment
         if module.params['comment'] is not None:
